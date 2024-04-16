@@ -1,0 +1,4 @@
+France forse dovresti cambiare i nomi delle varie copie in cose uniche tipo:
+-copia libro
+-copia giornale
+-copia multimedia 
