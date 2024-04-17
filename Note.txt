@@ -8,3 +8,5 @@ Mettere immagine di copertina in libro, giornali e multimedia
 
 inserire la relazione bibliotecario -- registra --> libro ecc... 
 bibliotecario -- registra --> copia
+
+mettere che genere ha dei valori predefiniti {narrativa per ragazzi, giallo, horror ecc...}
