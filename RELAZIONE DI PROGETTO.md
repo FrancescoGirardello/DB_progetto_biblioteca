@@ -1,7 +1,7 @@
-<font color = red>1) Analisi Dei Requisiti</font>
+<font color = red>1) **Analisi Dei Requisiti**</font>
 Si vuole realizzare un’applicazione di basi di dati per la gestione del SISTEMA BIBLIOTECARIO PROVINCIALE. L’applicativo è usato sia dai bibliotecari provinciali che dagli utenti normali. La base di dati deve tenere traccia di: utenti, biblioteche, libri, contenuti multimediali, giornali ed eventi.
 
-Per ciascun utente verrà memorizzato: codice fiscale, id numerico univoco, nome che è composto da nome battesimo e cognome, data di nascita, luogo di nascita, indirizzo di residenza, numero di telefono, password e email attraverso le quali accedono. Va, inoltre, memorizzato lo stato del suo account (attivo o bloccato) e se le notifiche sono impostate come attive o meno.
+Per ciascun utente verrà memorizzato: codice fiscale, id numerico univoco, nome (che è composto da nome battesimo e cognome), data di nascita, luogo di nascita, indirizzo di residenza, numero di telefono, password e email univoca attraverso le quali accedono. Va, inoltre, memorizzato lo stato del suo account (attivo o bloccato) e se le notifiche sono impostate come attive o meno.
 
 L’utente può essere registrato presso 0 o più biblioteche e può prendere in prestito da 0 a più copie di libri, giornali e contenuti multimediali dalle biblioteche presso cui è registrato. Per ogni prestito va memorizzata la data di inizio del prestito, la data di scadenza del prestito (calcolata a partire dalla data di inizio prestito + 30 giorni) e la data in cui è la copia è stata restituita.
 
@@ -9,7 +9,7 @@ L’utente può anche appartenere alla categoria Bibliotecario che, per essere t
 
 Per ciascuna biblioteca della provincia verrà memorizzato id biblioteca univoco, indirizzo, email, numero di telefono e numero totale degli elementi nel suo inventario. In una biblioteca lavorano uno o più bibliotecari. Non può esserci una biblioteca senza bibliotecari che ci lavorano.
 
-A ogni biblioteca possono venire registrati, da più bibliotecari, più utenti ed è possibile che ad una biblioteca non sia registrato alcun utente.
+A ogni biblioteca possono venire registrati più utenti ed è possibile che ad una biblioteca non sia registrato alcun utente.
 
 Ogni biblioteca è proprietaria di 0 a più copie di libri, multimedia e giornali e inoltre può ospitare da 0 a più copie di libri, contenuti multimediali e giornali prestati da un’altra biblioteca.
 
@@ -26,7 +26,7 @@ Ogni bibliotecario può organizzare da 0 a più eventi per la sola biblioteca pr
 Il diagramma ER comprenderà 7 entità forti (utente, bibliotecario, biblioteca, libri, multimedia, giornali, eventi)
 
 
-<font color = red>2) Progettazione dello schema ER/EER</font>
+<font color = red>2) **Progettazione dello schema ER/EER**</font>
 
 ![Diagramma ER](DiagrammaER.png)
 </br>
@@ -36,7 +36,41 @@ Il diagramma ER comprenderà 7 entità forti (utente, bibliotecario, biblioteca,
 </br>
 </br>
 </br>
-<font color = red>3) Schema Relazionale</font>
+<font color = red>3) **Schema Relazionale**</font>
 
-<font color = red>1)</font>
+<font color = red>1)</font> Schema relazionale finale con vincoli di integrità referenziale
 ![Schema Relazionale](SchemaRelazionaleDefinitivo.png)
+
+<font color = "red">2\)</font> Normalizzazione
+1NF: lo schema è in 1NF in quanto non sussistono attributi multivalore, composti o loro combinazione.
+
+2NF: Per le tabelle con una chiave primaria composta da un solo attributo il test è inutile (UTENTE, BIBLIOTECARIO, BIBLIOTECA, EVENTO, LIBRO, GIORNALE, MULTIMEDIA, VIENE\_REGISTRATO\_A, ORGANIZZA). 
+UTENTE_ PARTECIPA_EVENTO, UTENTE\_WISHLIST\_LIBRO, UTENTE\_WISHLIST\_GIORNALE, UTENTE\_WISHLIST\_MULTIMEDIALE sono già in 2NF perché formate dalla sola chiave. 
+In UTENTE\_PRENDE\_PRESTITO\_COPIA\_LIBRO, UTENTE\_PRENDE\_PRESTITO\_COPIA\_GIORNALE, UTENTE\_PRENDE\_PRESTITO\_COPIA\_MULTIMEDIA tutti gli attributi dipendono
+funzionalmente in modo completo dalla chiave primaria.
+Per COPIA_LIBRO sussistono la DF1: {<u>INVENTARIO, COMUNE</u>} -> {EDITORE, DIMENSIONE, N_PAGINE, STATO, LINGUE, N\_RISTAMPA, ID\_BIBLIOTECARIO\_REGISTRA}, 
+la DF2: <U>COMUNE</U> -> ID\_BIBLIOTECA\_PROPRIETARIA
+e la DF3: {<u>ISBN_LIB, INVENTARIO, COMUNE</u>} -> ID\_BIBLIOTECA\_OSPITANTE
+per cui si normalizza la relazione in: 
+![[Pasted image 20240530185028.png]]
+Per COPIA_GIORNALE sussistono la DF1: {<u>INVENTARIO, COMUNE</u>} -> {STATO, ID\_BIBLIOTECARIO_REGISTRA},
+la la DF2: <U>COMUNE</U> -> ID\_BIBLIOTECA\_PROPRIETARIA
+e la DF3: {<u>ISSN\_GIOR, INVENTARIO, COMUNE</u>} -> ID\_BIBLIOTECA\_OSPITANTE
+per cui si normalizza la relazione in: 
+![[Pasted image 20240530185612.png]]
+Per COPIA_MULTIMEDIA sussistono la DF1: {<u>INVENTARIO, COMUNE</u>} -> {STATO, ID\_BIBLIOTECARIO\_REGISTRA},
+la la DF2: <U>COMUNE</U> -> ID\_BIBLIOTECA\_PROPRIETARIA
+e la DF3: {<u>ID_MULTIMEDIA, INVENTARIO, COMUNE</u>} -> ID\_BIBLIOTECA\_OSPITANTE
+per cui si normalizza la relazione in: 
+![[Pasted image 20240530185915.png]]
+
+3NF: In UTENTE\_PRENDE\_PRESTITO\_COPIA\_LIBRO si ha che DATA\_INIZIO\_PRESTITO -> DATA\_SCADENZA\_PRESTITO ma DATA\_INIZIO\_PRESTITO non è chiave quindi si normalizza la relazione in: 
+![[Pasted image 20240530190244.png]]
+ In UTENTE\_PRENDE\_PRESTITO_COPIA\_GIORNALE si ha che DATA\_INIZIO\_PRESTITO -> DATA\_SCADENZA\_PRESTITO ma DATA\_INIZIO\_PRESTITO non è chiave quindi si normalizza la relazione in: 
+ ![[Pasted image 20240530190322.png]]
+ In UTENTE\_PRENDE\_PRESTITO\_COPIA\_MULTIMEDIA si ha che DATA\_INIZIO\_PRESTITO -> DATA\_SCADENZA\_PRESTITO ma DATA\_INIZIO\_PRESTITO non è chiave quindi si normalizza la relazione in: 
+ ![[Pasted image 20240530190415.png]]
+
+<font color = "red">3\)</font> Schema relazionale normalizzato
+![[Pasted image 20240530192239.png]]
+![[Pasted image 20240530192305.png]]
